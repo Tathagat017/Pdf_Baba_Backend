@@ -20,7 +20,7 @@ django-allauth==0.54.0
 django-cors-headers==4.1.0
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.2.2
-dnspython==2.4.2
+dnspython==2.3.0 
 entrypoints==0.4
 faiss-cpu==1.7.4
 frozenlist==1.4.0
