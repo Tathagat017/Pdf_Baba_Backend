@@ -42,7 +42,7 @@ motor==3.2.0
 multidict==6.0.4
 mypy-extensions==1.0.0
 numexpr==2.8.5
-numpy==1.25.2
+numpy==1.21.6
 oauthlib==3.2.2
 openai==0.27.6
 openapi-schema-pydantic==1.2.4
