@@ -89,7 +89,7 @@ WSGI_APPLICATION = 'PdfBabaBackend.wsgi.application'
 # }
 
 DATABASES = {
- "default": dj_database_url.parse('postgres://pdfbaba_user:HFxSSFQme1nZTB8SbRsTugFkzRHq6j3t@dpg-cjtiqhh5mpss73fb13d0-a.oregon-postgres.render.com/pdfbaba')
+ "default": dj_database_url.parse(os.environ.get('DATABASE_URL'))
 }
 
 # Password validation
