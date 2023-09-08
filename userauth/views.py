@@ -17,7 +17,7 @@ from dotenv import load_dotenv
 import os
 import glob
 from django.conf import settings
-
+from django.core.files.storage import FileSystemStorage
 def get_pdf_paths():
     # Construct the path to the "media/pdfs/" directory
     pdfs_directory = os.path.join(settings.MEDIA_ROOT, 'pdfs')  # Use 'pdfs' as your directory name
@@ -269,9 +269,10 @@ class AnswerQuestion(View):
         }
 
         return JsonResponse(data, status=200)
+
 @method_decorator(csrf_exempt, name='dispatch')
-class DeletePDFByNameView(View):
-    
+class DeleteAllInstancesOfPDFView(View):
+
     def post(self, request, *args, **kwargs):
         try:
             pdf_name = request.POST.get("pdf_name")
@@ -280,18 +281,23 @@ class DeletePDFByNameView(View):
             pdfs_to_delete = UserPdf.objects.filter(pdf_file__icontains=pdf_name)
 
             if pdfs_to_delete.exists():
-                # Delete the PDF entries from the database
-                pdfs_to_delete.delete()
+                # Get the default storage (FileSystemStorage)
+                fs = FileSystemStorage(location=settings.MEDIA_ROOT)
 
-                # Delete the actual PDF files from the filesystem
-                pdfs_directory = os.path.join(settings.MEDIA_ROOT, 'pdfs')
                 for pdf_to_delete in pdfs_to_delete:
-                    file_path = os.path.join(pdfs_directory, pdf_to_delete.pdf_file.name)
-                    if os.path.exists(file_path):
-                        os.remove(file_path)
+                    # Get the file path within the storage
+                    file_path = pdf_to_delete.pdf_file.name
 
-                return JsonResponse({'message': f'All PDFs with name "{pdf_name}" deleted successfully.'}, status=200)
+                    # Delete the actual PDF file from the storage
+                    pdf_file_path = os.path.join(settings.MEDIA_ROOT, file_path)
+                    if os.path.exists(pdf_file_path):
+                        os.remove(pdf_file_path)
+
+                    # Delete the PDF entry from the database
+                    pdf_to_delete.delete()
+
+                return JsonResponse({'message': f'All instances of PDF "{pdf_name}" deleted successfully.'}, status=200)
             else:
-                return JsonResponse({'error': f'No PDFs with name "{pdf_name}" found.'}, status=404)
+                return JsonResponse({'error': f'No instances of PDF "{pdf_name}" found.'}, status=404)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
