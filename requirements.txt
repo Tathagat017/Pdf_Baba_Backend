@@ -15,7 +15,7 @@ cryptography==41.0.3
 dataclasses-json==0.5.14
 defusedxml==0.7.1
 dj-database-url==2.1.0
-Django==4.1.4
+Django==3.2.21
 django-allauth==0.54.0
 django-cors-headers==4.2.0
 djangorestframework==3.14.0
